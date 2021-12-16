@@ -30,6 +30,10 @@ public class PointPositif implements Cloneable{
 			this.p.x = x;
 			ret=true;
 		}
+		else
+		{
+			this.p.x = 0;
+		}
 		return ret;
 	}
 	
@@ -39,6 +43,10 @@ public class PointPositif implements Cloneable{
 		{
 			this.p.y = y;
 			ret=true;
+		}
+		else
+		{
+			this.p.y = 0;
 		}
 		return ret;
 	}

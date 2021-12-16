@@ -48,7 +48,7 @@ public class Varroa extends Animal {
 	}
 	
 	/**
-	 * si le Varroa a un h�bergeur, il se d�place avec l'abeille
+	 * si le Varroa a un hébergeur, il se déplace avec l'abeille
 	 */
 	public void seDeplacer() {
 		if(hebergeur != null)

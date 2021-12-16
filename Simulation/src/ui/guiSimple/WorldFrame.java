@@ -8,12 +8,16 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Hashtable;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import tp.model.world.MondeAnimable;
 
@@ -28,6 +32,7 @@ public class WorldFrame extends JFrame implements Runnable{
 	 */
 	private MondeAnimable monde;
 	
+    private int durationOfCycle;
 	/**
 	 * Thread d'éxécution
 	 */
@@ -75,7 +80,7 @@ public class WorldFrame extends JFrame implements Runnable{
 		JPanel panInfo = new JPanel();
 		panInfo.setBackground(Color.blue);
 		panInfo.add(labelInfo);
-		labelInfo.setText("Animation non d�marr�");
+		labelInfo.setText("Animation non démarré");
 		JPanel panCommandes = new JPanel();
 		panCommandes.setBackground(Color.green);
 		panCommandes.setLayout(new GridLayout(10,1));
@@ -114,6 +119,36 @@ public class WorldFrame extends JFrame implements Runnable{
 		panneau.add(panMonde,BorderLayout.CENTER);
 		
 		setContentPane(panneau);
+		
+        JLabel status = new JLabel("Temps du cycle", JLabel.CENTER);
+         
+		JSlider slider = new JSlider(); 
+        slider.setMajorTickSpacing(10);
+        slider.setPaintTicks(true);
+         
+     
+        slider.setPaintLabels(true);
+         
+
+        Hashtable<Integer, JLabel> position = new Hashtable<Integer, JLabel>();
+        position.put(0, new JLabel("20"));
+        position.put(60, new JLabel("60"));
+        position.put(100, new JLabel("100"));
+         
+
+        slider.setLabelTable(position);
+         
+
+        slider.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                status.setText("Temps de cycle : " + ((JSlider)e.getSource()).getValue());
+                int cycleTime = slider.getValue();
+                durationOfCycle = cycleTime;
+            }
+        });
+        
+        panCommandes.add(slider);
+        panCommandes.add(status);
 	}
 
 	/**
@@ -156,7 +191,7 @@ public class WorldFrame extends JFrame implements Runnable{
 		while(true) {
 			repaint();
 			try {
-				Thread.sleep(50);
+		        Thread.sleep(durationOfCycle);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

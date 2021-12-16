@@ -2,6 +2,7 @@ package tp.model.comportements;
 
 import tp.model.agents.Agent;
 import tp.model.agents.Animal;
+import tp.model.agents.PointPositif;
 
 /**
  * un hébergeur peut accueillir un animal
@@ -23,4 +24,6 @@ public interface Hebergeur {
 	public boolean accueillir(Agent a);
 
 	public void supprimer(Animal a);
+	
+	public PointPositif getCoord();
 }

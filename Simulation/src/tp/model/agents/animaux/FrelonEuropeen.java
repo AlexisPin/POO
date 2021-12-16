@@ -12,7 +12,7 @@ public class FrelonEuropeen extends Frelon {
 	
 	public FrelonEuropeen(Sexe s, Point p) {
 		super(s,p);
-		proies.add(FrelonEuropeen.class);
+		proies.add(FrelonAsiatique.class);
 	}
 
 	public ArrayList<Class<? extends Animal>> getProies()

@@ -4,10 +4,12 @@ import java.awt.Point;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import tp.model.agents.Agent;
 import tp.model.agents.Animal;
 import tp.model.agents.Etat;
+import tp.model.agents.PointPositif;
 import tp.model.agents.Sexe;
 import tp.model.agents.vegetaux.Vegetal;
 import tp.model.comportements.Hebergeur;
@@ -18,6 +20,7 @@ import tp.model.world.Monde;
  *
  */
 public abstract class Abeille extends Animal implements Hebergeur{
+	
 	/**
 	 * parasite �ventuel de l'abeille
 	 * si l'abeille est parasit�e, passe � true
@@ -34,6 +37,7 @@ public abstract class Abeille extends Animal implements Hebergeur{
 	
 	private Map<Abeille,Varroa> dictionnaireAbeillesParasites = new HashMap<Abeille,Varroa>();
 	
+
 	public Abeille(Sexe s, Point p) {
 		super(s,p);
 		dictionnaireAbeillesParasites.put(this, null);
@@ -64,39 +68,38 @@ public abstract class Abeille extends Animal implements Hebergeur{
 	public boolean accueillir(Agent a) {
 		boolean ret = false;
 		if(peutAccueillir(a)) {
-			dictionnaireAbeillesParasites.replace(this, (Varroa) a);
+			dictionnaireAbeillesParasites.replace((Abeille) this, (Varroa) a);
 			parasite = true;
 			aggraverEtat();
 			ret = true;
 		}
 		return ret;
 	}
-	@Override
-	protected void maj() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void seNourrir() {
-		if(getNiveauSante() != Etat.Mourant)
-		{
-			setQteNourriture(1);
-			ameliorerEtat();
-		}
-		if(getQteNourriture() == 0) 
-		{
-			setNiveauSante(Etat.Mourant);
-		}
-	}
 	
+	/**
+	 * Supprimer un varroa
+	 */
 	@Override
 	public void supprimer(Animal a) {
-		if(dictionnaireAbeillesParasites.get(a) != null)
+		for(Entry<Abeille, Varroa> entry : dictionnaireAbeillesParasites.entrySet()) 
 		{
-			dictionnaireAbeillesParasites.get(a).setHebergeur(null);
+		     Abeille key =  entry.getKey();
+		     Varroa value =  entry.getValue();
+		     if(value == a)
+		     {
+		    	 dictionnaireAbeillesParasites.replace(key, null);
+		    	 parasite = false;
+		     }
 		}
-		dictionnaireAbeillesParasites.remove(a);
 	}
+
+	public static int getQtemax() {
+		return qteMax;
+	}
+	
+	public Map<Abeille, Varroa> getDictionnaireAbeillesParasites() {
+		return dictionnaireAbeillesParasites;
+	}
+	
 }
 	

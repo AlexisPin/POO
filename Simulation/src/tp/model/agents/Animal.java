@@ -48,9 +48,7 @@ public abstract class Animal extends Agent implements Deplacable {
 	/** hebergeur de l'animal */
 	protected Hebergeur hebergeur;
 	
-	private int qteNourriture = 3;
-	
-	private boolean modeNuit = false;
+	private int qteNourriture = 50;
 	
 	/* 
 	 * constructeurs 
@@ -107,30 +105,27 @@ public abstract class Animal extends Agent implements Deplacable {
 	 * comportements d'instance
 	 */
 	public void rentrerHebergeur(){
-		
-		while(getCoord().getX() != ((Decor) hebergeur).getCoord().getX())
+		if(this.getCoord().getX() != hebergeur.getCoord().getX())
 		{
-			if(getCoord().getX() > ((Decor) hebergeur).getCoord().getX())
+			if(this.getCoord().getX() > hebergeur.getCoord().getX())
 			{
-				setCoord((int)(coord.getX()-1),(int)(coord.getY()));
+				this.setCoord((int)(coord.getX()-1),(int)(coord.getY()));
 			}else
 			{
-				setCoord((int)(coord.getX()+1),(int)(coord.getY()));
+				this.setCoord((int)(coord.getX()+1),(int)(coord.getY()));
 			}
 		}
-		while(getCoord().getY() != ((Decor) hebergeur).getCoord().getY())
+		if(this.getCoord().getY() != hebergeur.getCoord().getY())
 		{
-			if(getCoord().getY() > ((Decor) hebergeur).getCoord().getY())
+			if(this.getCoord().getY() > hebergeur.getCoord().getY())
 			{
-				setCoord((int)(coord.getX()),(int)(coord.getY()-1));
+				this.setCoord((int)(coord.getX()),(int)(coord.getY()-1));
 			}else
 			{
-				setCoord((int)(coord.getX()),(int)(coord.getY()+1));
+				this.setCoord((int)(coord.getX()),(int)(coord.getY()+1));
 			}
 		}
 	}
-	
-
 	/*
 	 * (non-Javadoc)
 	 * @see complet.model.comportements.Deplacable#seDeplacer()
@@ -140,18 +135,9 @@ public abstract class Animal extends Agent implements Deplacable {
 	 * @see model.comportements.Deplacable#seDeplacer()
 	 */
 	public void seDeplacer() {
-		if(modeNuit == false)
-		{
 			int aleaX = (int)(Math.random()*3)-1;
 			int aleaY = (int)(Math.random()*3)-1;
 			this.setCoord((int)(coord.getX()+aleaX),(int)(coord.getY()+aleaY));
-		}else 
-		{
-			if(hebergeur != null)
-			{
-				rentrerHebergeur();
-			}
-		}
 	}
 	
 	

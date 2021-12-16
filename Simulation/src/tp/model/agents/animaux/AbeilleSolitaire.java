@@ -4,6 +4,7 @@ import java.awt.Point;
 
 import tp.model.decor.Ruche;
 import tp.model.agents.Agent;
+import tp.model.agents.Etat;
 import tp.model.agents.Sexe;
 import tp.model.agents.vegetaux.Arbre;
 
@@ -25,6 +26,24 @@ public class AbeilleSolitaire extends Abeille {
 	public Object clone() {
 		AbeilleSolitaire a = new AbeilleSolitaire(getSexe(), new Point(getCoord().getX(),getCoord().getY()));
 		return a;
+	}
+
+	@Override
+	protected void maj() {
+		
+	}
+	
+	@Override
+	protected void seNourrir() {
+		if(getNiveauSante() != Etat.Mourant)
+		{
+			setQteNourriture(1);
+			ameliorerEtat();
+		}
+		if(getQteNourriture() == 0) 
+		{
+			setNiveauSante(Etat.Mourant);
+		}
 	}
 
 }

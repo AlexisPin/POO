@@ -5,12 +5,13 @@ import java.io.File;
 
 import tp.model.comportements.Deplacable;
 import tp.model.world.Dessinable;
+import tp.model.world.Monde;
 
 /**
- * Cette classe modélise un Agent, c'est à dire un élément du monde qui est vivant ET 
- * qui peut interagir avec d'autres éléments de manière réciproque
+ * Cette classe modï¿½lise un Agent, c'est ï¿½ dire un ï¿½lï¿½ment du monde qui est vivant ET 
+ * qui peut interagir avec d'autres ï¿½lï¿½ments de maniï¿½re rï¿½ciproque
  * Par exemple, une Abeille (qui butine une fleur) est un Agent
- * Une Fleur (qui produit et donne du nectar ou du pollen à une Abeille) est un Agent.
+ * Une Fleur (qui produit et donne du nectar ou du pollen ï¿½ une Abeille) est un Agent.
  * Une ruche, en revanche, n'est pas un agent (elle n'est pas vivante, elle ne produit rien).
  * @author bruno
  *
@@ -23,27 +24,32 @@ public abstract class Agent implements Cloneable, Comparable<Agent>, Dessinable{
 	/* attributs d'instance*/
 	/** identifiant unique de l'animal*/
 	private int id;
-	/** age en unité de temps*/
+	/** age en unitï¿½ de temps*/
 	protected int age;
 	/** position sur la carte*/
 	protected PointPositif coord;
 	//protected Point coord;
 	
 	/**
-	 * faim (booléen pour le moment)
+	 * faim (boolï¿½en pour le moment)
 	 */
 	protected boolean faim = false;
 	
 	/**
-	 * crée un agent d'age 0, avec un id unique à la position coord
+	 * mode nuit ou non
+	 */
+	private boolean modeNuit = false;
+	
+	/**
+	 * crï¿½e un agent d'age 0, avec un id unique ï¿½ la position coord
 	 * @param coord position de l'agent
 	 */
 	public Agent(Point coord) {
 		age = 0;
 		id = Agent.getUniqueId();
-		//à commenter partie 3 
+		//ï¿½ commenter partie 3 
 		//this.coord=coord;
-		//à décommenter partie 3 
+		//ï¿½ dï¿½commenter partie 3 
 		this.coord=new PointPositif(coord);
 	}
 	/**
@@ -67,11 +73,13 @@ public abstract class Agent implements Cloneable, Comparable<Agent>, Dessinable{
 	 * renvoie vrai si l'agent a faim
 	 * @return
 	 */
-	public boolean aFaim() {return faim;}
+	public boolean aFaim() {
+		return faim;
+	}
 	
 	/**
-	 * renvoie un clone de la position (la position de l'agent ne sera pas modifiable par l'intermédiaire de 
-	 * l'objet renvoyé
+	 * renvoie un clone de la position (la position de l'agent ne sera pas modifiable par l'intermï¿½diaire de 
+	 * l'objet renvoyï¿½
 	 * @return un clone de {@link #coord}
 	 */
 	//partie 2 et 3
@@ -87,7 +95,7 @@ public abstract class Agent implements Cloneable, Comparable<Agent>, Dessinable{
 	
 	
 	/**
-	 * age doit être un entier positif
+	 * age doit ï¿½tre un entier positif
 	 * @param a
 	 * @return true si age positif
 	 */
@@ -101,7 +109,7 @@ public abstract class Agent implements Cloneable, Comparable<Agent>, Dessinable{
 	}
 	
 	/**
-	 * x et y doivent être positifs pour être pris en compte
+	 * x et y doivent ï¿½tre positifs pour ï¿½tre pris en compte
 	 * @param x
 	 * @param y
 	 */
@@ -111,7 +119,7 @@ public abstract class Agent implements Cloneable, Comparable<Agent>, Dessinable{
 	}
 	
 	/**
-	 * fait vieillir l'agent d'une unité de temps
+	 * fait vieillir l'agent d'une unitï¿½ de temps
 	 */
 	public void vieillir() {
 		setAge(age+1);
@@ -119,7 +127,7 @@ public abstract class Agent implements Cloneable, Comparable<Agent>, Dessinable{
 	
 	/**
 	 * algo qui traite la rencontre de l'agent avec un autre agent
-	 * dépend du type des agents impliqués
+	 * dï¿½pend du type des agents impliquï¿½s
 	 * @param a
 	 */
 	public abstract void rencontrer(Agent a); 
@@ -130,7 +138,14 @@ public abstract class Agent implements Cloneable, Comparable<Agent>, Dessinable{
 	public final void cycle() {
 		vieillir();
 		if(this instanceof Deplacable) {
-			((Deplacable)this).seDeplacer();
+			if(modeNuit)
+			{
+				((Deplacable)this).rentrerHebergeur();
+			}else
+			{
+				((Deplacable)this).seDeplacer();
+			}
+			
 		}
 		seNourrir();
 		maj();
@@ -141,7 +156,7 @@ public abstract class Agent implements Cloneable, Comparable<Agent>, Dessinable{
 	public abstract Object clone();
 	@Override
 	public String toString() {
-		//NomDeLaClasse n° id_agent (position x; position y)
+		//NomDeLaClasse nï¿½ id_agent (position x; position y)
 		return getClass().getSimpleName() + " " + id + " (" + getCoord() + ")";
 	}
 	
@@ -151,8 +166,6 @@ public abstract class Agent implements Cloneable, Comparable<Agent>, Dessinable{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + age;
-		result = prime * result + ((coord == null) ? 0 : coord.hashCode());
 		result = prime * result + id;
 		return result;
 	}
@@ -180,7 +193,7 @@ public abstract class Agent implements Cloneable, Comparable<Agent>, Dessinable{
 
 	/* comportements de classe */ 
 	/**
-	 * Renvoie un identifiant unique non encore utilisé
+	 * Renvoie un identifiant unique non encore utilisï¿½
 	 * @return un identifiant entier unique d'animal
 	 */
 	private static int getUniqueId() {
@@ -190,7 +203,7 @@ public abstract class Agent implements Cloneable, Comparable<Agent>, Dessinable{
 	}
 	/**
 	 * Compare l'id de deux agents 
-	 * @return un entier positif, négatif ou null
+	 * @return un entier positif, nï¿½gatif ou null
 	 */
 	public int compareTo(Agent a) {
 		return id - a.id;
@@ -200,5 +213,10 @@ public abstract class Agent implements Cloneable, Comparable<Agent>, Dessinable{
 		return "images"+File.separator+getClass().getSimpleName()+".gif";
 	}
 	
-
+	public boolean isModeNuit() {
+		return modeNuit;
+	}
+	public void setModeNuit(boolean modeNuit) {
+		this.modeNuit = modeNuit;
+	}
 }

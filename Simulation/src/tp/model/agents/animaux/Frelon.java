@@ -17,6 +17,16 @@ public abstract class Frelon extends Animal {
 	 */
 	protected ArrayList<Class<? extends Animal>> proies;
 	
+	/**
+	 * nombre de cycle possible avant que le frelon ait de nouveau faim
+	 */
+	private int cycleSansManger = 20;
+	
+	/**
+	 * cycle passer
+	 */
+	private int cyclePassed;
+	
 	public Frelon(Sexe s,Point p) {
 		super(s,p);
 		proies = new ArrayList<Class<? extends Animal>>();
@@ -41,20 +51,30 @@ public abstract class Frelon extends Animal {
 	protected void gestionProie(Animal a) {
 		if(faim && proies.contains(a.getClass())) {
 			faim=false;
+			System.out.println(this + "à mangé " + a);
 		}
 	}
 	
+	
 	@Override
 	protected void maj() {
-		// TODO Auto-generated method stub
-		
+		if(faim == true)
+		{
+			setQteNourriture(getQteNourriture()-1);
+		}
+		if(cyclePassed > cycleSansManger)
+		{
+			faim = true;
+			cyclePassed = 0;
+		}
+		++cyclePassed;
 	}
 
 	@Override
 	protected void seNourrir() {
-		if(getNiveauSante() != Etat.Mourant)
+		if(getNiveauSante() != Etat.Mourant && faim == false)
 		{
-			setQteNourriture(1);
+			setQteNourriture(50);
 			ameliorerEtat();
 		}
 		if(getQteNourriture() == 0) 

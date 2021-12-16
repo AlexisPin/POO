@@ -1,18 +1,23 @@
 package tp.model.decor;
 
 import java.awt.Point;
+import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Queue;
+import java.util.Map.Entry;
 
 import tp.model.agents.Agent;
 import tp.model.agents.Animal;
+import tp.model.agents.PointPositif;
 import tp.model.agents.Sexe;
+import tp.model.agents.animaux.Abeille;
 import tp.model.agents.animaux.AbeilleDomestique;
 import tp.model.agents.animaux.AbeilleSolitaire;
 import tp.model.agents.animaux.Frelon;
+import tp.model.agents.animaux.Varroa;
 import tp.model.comportements.Hebergeur;
 
 public class Ruche extends Decor implements Hebergeur{
@@ -32,7 +37,7 @@ public class Ruche extends Decor implements Hebergeur{
 	private LinkedList<AbeilleDomestique> queueAbeilles = new LinkedList<AbeilleDomestique>();
 	
 	/**
-	 * quantité de miel disponible dans la ruche
+	 * quantitï¿½ de miel disponible dans la ruche
 	 */
 	private int stockMiel;
 	
@@ -72,11 +77,19 @@ public class Ruche extends Decor implements Hebergeur{
 		while(it.hasNext()) {ret+="\t*"+it.next()+"\n";}
 		return ret;
 	}
-
+	
+	/**
+	 * Supprimer une abeille
+	 */
 	@Override
 	public void supprimer(Animal a) {
+
+		if(((Abeille) a).getDictionnaireAbeillesParasites().get(a) != null)
+		{
+			((Abeille) a).getDictionnaireAbeillesParasites().get(a).setHebergeur(null);
+		}
+
 		population.remove(a);
-		
 	}
 
 	public int getStockMiel() {

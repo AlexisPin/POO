@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import tp.model.agents.Agent;
 import tp.model.agents.Animal;
+import tp.model.agents.PointPositif;
 import tp.model.agents.animaux.AbeilleDomestique;
 import tp.model.agents.animaux.AbeilleSolitaire;
 import tp.model.agents.animaux.Frelon;
@@ -13,7 +14,9 @@ import tp.model.comportements.Hebergeur;
 
 public class Arbre extends Vegetal implements Hebergeur{
 
-	
+	/**
+	 * Liste des AbeilleSolitaire et Frelons dans l'arbre
+	 */
 	private HashSet<Animal> population;
 	
 	public Arbre(Point point, double taille) {
@@ -75,4 +78,5 @@ public class Arbre extends Vegetal implements Hebergeur{
 	public int getHeight() {
 		return 60;
 	}
+	
 }

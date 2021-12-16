@@ -9,9 +9,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import javax.swing.Timer;
 
@@ -20,6 +22,7 @@ import tp.model.agents.PointPositif;
 import tp.model.agents.Sexe;
 import tp.model.agents.Etat;
 import tp.model.agents.Animal;
+import tp.model.agents.animaux.Abeille;
 import tp.model.agents.animaux.AbeilleDomestique;
 import tp.model.agents.animaux.AbeilleSolitaire;
 import tp.model.agents.animaux.FrelonAsiatique;
@@ -40,7 +43,6 @@ public class Monde implements MondeAnimable{
 	 */
 	private Set<Decor>decors;
 
-	private Set<Integer>zone;
 	/**
 	 * map de probabilitÃ© pour trouver un agent
 	 */
@@ -60,11 +62,12 @@ public class Monde implements MondeAnimable{
 	/**
 	 * rayon maximal pour la rencontre
 	 */
-	private static int RAYON = 2;
+	private static int RAYON = 10;
 	/**
 	 * Timer pour dÃ©clencher un Ã©vÃ¨nement toutes les x ms
 	 */
 	private Timer timer;
+
 
 	
 	public Set<Agent> getAgents() {
@@ -102,14 +105,14 @@ public class Monde implements MondeAnimable{
 
 
 	/**
-	 * Méthode utilitaire statistique pour produire la table de proba
+	 * Mï¿½thode utilitaire statistique pour produire la table de proba
 	 * d'apparition d'un agent
 	 * @return
 	 */
 	private Map<Integer, Agent> probaAgent() {
 		/*
-		 * par commodité: la map n'est plus statique pour permettre le paramétrage
-		 * par l'interface graphique des probabilités d'apparition d'agents.
+		 * par commoditï¿½: la map n'est plus statique pour permettre le paramï¿½trage
+		 * par l'interface graphique des probabilitï¿½s d'apparition d'agents.
 		 */
 		decors = new HashSet<Decor>();
 		Ruche r1 =new Ruche(new Point(10,50));
@@ -130,8 +133,8 @@ public class Monde implements MondeAnimable{
 	}
 	
 	/**
-	 * fabrication aléatoire d'un Agent par tirage dans la Map
-	 * et positionnement aléatoire
+	 * fabrication alï¿½atoire d'un Agent par tirage dans la Map
+	 * et positionnement alï¿½atoire
 	 * @param alea
 	 * @return
 	 */
@@ -151,7 +154,7 @@ public class Monde implements MondeAnimable{
 		else {
 			agent = new Fleur(new Point(0,0));
 		}
-		//positionnement aléatoire entre Longueur et Largeur
+		//positionnement alï¿½atoire entre Longueur et Largeur
 		int aleaX = (int)(Math.random()*LONGUEUR);
 		int aleaY = (int)(Math.random()*LARGEUR);
 		agent.setCoord(aleaX, aleaY);
@@ -207,6 +210,17 @@ public class Monde implements MondeAnimable{
 		}
 		return agentsVoisin;
 	}
+	
+	public Set<Agent> copie(Set<Agent> agents) {
+		Iterator<Agent> it = agents.iterator();
+		Set<Agent> copieAgent=new TreeSet<Agent>();
+		while(it.hasNext())
+		{
+			Agent agent = (Agent)it.next();
+			copieAgent.add(agent);
+		}
+		return copieAgent;
+	}
 	/**
 	 * gÃ©nÃ¨re un cycle de vie dans le monde
 	 */
@@ -214,23 +228,78 @@ public class Monde implements MondeAnimable{
 		for(Agent agent : agents)
 		{
 			agent.cycle();
+			
 			if(agent instanceof Animal) 
 			{
 				if(((Animal) agent).getNiveauSante() == Etat.Mourant)
 				{
 					((Animal) agent).mourrir();
-					agents.remove(agent);
+					Set<Agent> copieAgent = copie(agents);
+					copieAgent.remove(agent);
+					agents = copie(copieAgent);
 				}
+			}
+			
+		}
+		Map<Agent, List<Agent>> agentsVoisin = gererRencontre();
+		for(Entry<Agent, List<Agent>> entry : agentsVoisin.entrySet()) {
+		    Agent key =  entry.getKey();
+		    List<Agent> value =  entry.getValue();
+		     
+			ListIterator<Agent> agentAProximite = value.listIterator();
+			if(agentAProximite.hasNext()) 
+			{
+				key.rencontrer(agentAProximite.next());
+			}	
+		}
+	}
+
+	public List<List<PointPositif>> creationZone() {
+	List<List<PointPositif>>  zone = new ArrayList<List<PointPositif>>();
+	ArrayList<PointPositif> eachZone = new ArrayList<PointPositif>();
+		for(int i = 0; i < 30; i++) 
+		{
+			zone.add(new ArrayList<PointPositif>());
+			for(int j = 0; j < 20; j++) 
+			{
+				PointPositif coinSuperieur = new PointPositif(new Point(10*i, 10*j));
+				PointPositif coinInferieur = new PointPositif(new Point(10+10*i, 10+10*j));
+				eachZone.add(coinSuperieur);
+				eachZone.add(coinInferieur); 
+				zone.add(eachZone);
+				//System.out.println(eachZone);
+				eachZone.removeAll(eachZone);
 				
 			}
 		}
-		gererRencontre();
+		System.out.println(zone);
+		return zone;
 	}
+	
 
+	public void testZone() {
+		List<List<PointPositif>> zone = creationZone();
+		
+		//System.out.println(zone);
+	
+	}
+	
+	public Map<List<PointPositif>, List<Agent>> gererRencontrev2() {
+		Set<Agent> coordSet = getAgentByCoord();
+		List<List<PointPositif>> zone = creationZone();
+		Map<List<PointPositif>,List<Agent>> agentsVoisin = new HashMap<List<PointPositif>,List<Agent>>();
+		for(Agent agent:coordSet) {
+		
+		}
+		return agentsVoisin;
+	}
+	
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		cycle();		
-		System.out.println("cycle");
+		cycle();
+		testZone();
+		//System.out.println("cycle");
 	}
 
 	@Override
@@ -250,5 +319,7 @@ public class Monde implements MondeAnimable{
 		ret.addAll((Collection<? extends Dessinable>) agents);
 		return ret;
 	}
+
+
 
 }
