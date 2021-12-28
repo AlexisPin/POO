@@ -48,7 +48,9 @@ public abstract class Animal extends Agent implements Deplacable {
 	/** hebergeur de l'animal */
 	protected Hebergeur hebergeur;
 	
-	private int qteNourriture = 50;
+	protected int initQteNourriture = 200;
+	
+	protected int qteNourriture = initQteNourriture;
 	
 	/* 
 	 * constructeurs 
@@ -172,13 +174,17 @@ public abstract class Animal extends Agent implements Deplacable {
 	public int getQteNourriture() {
 		return qteNourriture;
 	}
+	
+	public int getInitQteNourriture() {
+		return initQteNourriture;
+	}
 
 	public void setQteNourriture(int qteNourriture) {
 		this.qteNourriture = qteNourriture;
 	}
 
 	/**
-	 * 
+	 * Supprimer les animaux
 	 */
 	public void mourrir() {
 		if(hebergeur != null) {

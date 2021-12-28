@@ -13,6 +13,7 @@ import tp.model.agents.PointPositif;
 import tp.model.agents.Sexe;
 import tp.model.agents.vegetaux.Vegetal;
 import tp.model.comportements.Hebergeur;
+import tp.model.decor.Ruche;
 import tp.model.world.Monde;
 /**
  * Abeille est un hï¿½bergeur pour ses parasites (Varroa par exemple)
@@ -37,7 +38,8 @@ public abstract class Abeille extends Animal implements Hebergeur{
 	
 	private Map<Abeille,Varroa> dictionnaireAbeillesParasites = new HashMap<Abeille,Varroa>();
 	
-
+	private boolean rencontreVegetal = false;
+	
 	public Abeille(Sexe s, Point p) {
 		super(s,p);
 		dictionnaireAbeillesParasites.put(this, null);
@@ -48,11 +50,14 @@ public abstract class Abeille extends Animal implements Hebergeur{
 		if(a instanceof Vegetal && qteMiel<Abeille.qteMax) {
 			Vegetal v = (Vegetal)a;
 			qteMiel = qteMiel + v.getPortionNectar();
+			rencontreVegetal = true;
+			
 		}
 		/* rencontre avec un prï¿½dateur */
 		else if(a instanceof Frelon && getNiveauSante()!=Etat.Mourant) {
 			setNiveauSante(Etat.EnDetresse);
-			if (a.aFaim()) {setNiveauSante(Etat.Mourant);}
+			if (a.aFaim()) {setNiveauSante(Etat.Mourant);
+			System.out.println(a + " à mangé" + this);}
 		}
 	}
 
@@ -99,6 +104,25 @@ public abstract class Abeille extends Animal implements Hebergeur{
 	
 	public Map<Abeille, Varroa> getDictionnaireAbeillesParasites() {
 		return dictionnaireAbeillesParasites;
+	}
+	
+	@Override
+	protected void maj() {
+		setQteNourriture(getQteNourriture()-1);
+	}
+	
+	@Override
+	protected void seNourrir() {
+		if(getNiveauSante() != Etat.Mourant && rencontreVegetal)
+		{
+			setQteNourriture(getInitQteNourriture());
+			ameliorerEtat();
+			rencontreVegetal = false;
+		}
+		if(getQteNourriture() == 0) 
+		{
+			setNiveauSante(Etat.Mourant);
+		}
 	}
 	
 }

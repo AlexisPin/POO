@@ -5,6 +5,32 @@ import java.awt.Point;
 public class PointPositif implements Cloneable{
 
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((p == null) ? 0 : p.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PointPositif other = (PointPositif) obj;
+		if (p == null) {
+			if (other.p != null)
+				return false;
+		} else if (!p.equals(other.p))
+			return false;
+		return true;
+	}
+
 	private Point p;
 
 	public PointPositif(Point p) {
@@ -13,6 +39,11 @@ public class PointPositif implements Cloneable{
 		this.setY((int) p.getY());
 	}
 	
+
+	public PointPositif(int i, int j) {
+		this(new Point(Math.abs(i),Math.abs(j)));
+	}
+
 
 	public int getY() {
 		return p.y;

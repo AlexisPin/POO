@@ -51,7 +51,7 @@ public abstract class Frelon extends Animal {
 	protected void gestionProie(Animal a) {
 		if(faim && proies.contains(a.getClass())) {
 			faim=false;
-			System.out.println(this + "à mangé " + a);
+			seNourrir();
 		}
 	}
 	
@@ -74,7 +74,7 @@ public abstract class Frelon extends Animal {
 	protected void seNourrir() {
 		if(getNiveauSante() != Etat.Mourant && faim == false)
 		{
-			setQteNourriture(50);
+			setQteNourriture(getInitQteNourriture());
 			ameliorerEtat();
 		}
 		if(getQteNourriture() == 0) 

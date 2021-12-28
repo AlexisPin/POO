@@ -137,15 +137,9 @@ public abstract class Agent implements Cloneable, Comparable<Agent>, Dessinable{
 	 */
 	public final void cycle() {
 		vieillir();
-		if(this instanceof Deplacable) {
-			if(modeNuit)
-			{
-				((Deplacable)this).rentrerHebergeur();
-			}else
-			{
-				((Deplacable)this).seDeplacer();
-			}
-			
+		if(this instanceof Deplacable) 
+		{
+			((Deplacable)this).seDeplacer();
 		}
 		seNourrir();
 		maj();

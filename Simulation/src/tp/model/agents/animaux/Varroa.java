@@ -30,15 +30,15 @@ public class Varroa extends Animal {
 
 	@Override
 	protected void maj() {
-		// TODO Auto-generated method stub
+		setQteNourriture(getQteNourriture()-1);
 		
 	}
 
 	@Override
 	protected void seNourrir() {
-		if(getNiveauSante() != Etat.Mourant)
+		if(getNiveauSante() != Etat.Mourant && hebergeur != null)
 		{
-			setQteNourriture(1);
+			setQteNourriture(getInitQteNourriture());
 			ameliorerEtat();
 		}
 		if(getQteNourriture() == 0) 

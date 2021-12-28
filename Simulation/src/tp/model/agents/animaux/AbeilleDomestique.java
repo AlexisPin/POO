@@ -39,21 +39,6 @@ public class AbeilleDomestique extends Abeille {
 		setQteNourriture(getQteNourriture()-1);
 	}
 	
-	@Override
-	protected void seNourrir() {
-		if(getNiveauSante() != Etat.Mourant)
-		{
-			if(((Ruche) hebergeur).getStockMiel() > 0 && ((Ruche) hebergeur).abeilleDansLaRuche(this))
-			{
-				ameliorerEtat();
-				setQteNourriture(20);
-			}
-		}
-		if(getQteNourriture() == 0) 
-		{
-			setNiveauSante(Etat.Mourant);
-		}
-	}
 	
 	@Override
 	public Object clone() {

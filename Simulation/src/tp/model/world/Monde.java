@@ -20,6 +20,7 @@ import javax.swing.Timer;
 import tp.model.agents.Agent;
 import tp.model.agents.PointPositif;
 import tp.model.agents.Sexe;
+import tp.model.agents.Zone;
 import tp.model.agents.Etat;
 import tp.model.agents.Animal;
 import tp.model.agents.animaux.Abeille;
@@ -241,64 +242,86 @@ public class Monde implements MondeAnimable{
 			}
 			
 		}
-		Map<Agent, List<Agent>> agentsVoisin = gererRencontre();
-		for(Entry<Agent, List<Agent>> entry : agentsVoisin.entrySet()) {
-		    Agent key =  entry.getKey();
-		    List<Agent> value =  entry.getValue();
-		     
-			ListIterator<Agent> agentAProximite = value.listIterator();
-			if(agentAProximite.hasNext()) 
-			{
-				key.rencontrer(agentAProximite.next());
-			}	
-		}
+		
+		 Map<Agent, List<Agent>> agentsVoisin = gererRencontreOpti(); 
+		 for(Entry<Agent,List<Agent>> entry : agentsVoisin.entrySet()) 
+		 { 
+			 Agent key = entry.getKey();
+			 List<Agent> value = entry.getValue();
+			 ListIterator<Agent> agentAProximite = value.listIterator();
+			 if(agentAProximite.hasNext()) 
+			 { 
+				 key.rencontrer(agentAProximite.next()); 
+			 } 
+		 }
 	}
 
 	public List<List<PointPositif>> creationZone() {
 	List<List<PointPositif>>  zone = new ArrayList<List<PointPositif>>();
-	ArrayList<PointPositif> eachZone = new ArrayList<PointPositif>();
+
 		for(int i = 0; i < 30; i++) 
 		{
-			zone.add(new ArrayList<PointPositif>());
+			ArrayList<PointPositif> eachZone = new ArrayList<PointPositif>();
 			for(int j = 0; j < 20; j++) 
 			{
+
 				PointPositif coinSuperieur = new PointPositif(new Point(10*i, 10*j));
 				PointPositif coinInferieur = new PointPositif(new Point(10+10*i, 10+10*j));
 				eachZone.add(coinSuperieur);
 				eachZone.add(coinInferieur); 
 				zone.add(eachZone);
-				//System.out.println(eachZone);
-				eachZone.removeAll(eachZone);
-				
+				System.out.println(eachZone);	
 			}
+			zone.add(eachZone);
 		}
 		System.out.println(zone);
 		return zone;
 	}
 	
 
-	public void testZone() {
 		List<List<PointPositif>> zone = creationZone();
-		
-		//System.out.println(zone);
 	
-	}
-	
-	public Map<List<PointPositif>, List<Agent>> gererRencontrev2() {
+	public Map<Zone, List<Agent>> distrubitionZoneAgent() {
 		Set<Agent> coordSet = getAgentByCoord();
-		List<List<PointPositif>> zone = creationZone();
-		Map<List<PointPositif>,List<Agent>> agentsVoisin = new HashMap<List<PointPositif>,List<Agent>>();
+		Map<Zone,List<Agent>> agentsVoisin = new HashMap<Zone,List<Agent>>();
 		for(Agent agent:coordSet) {
-		
+			Zone zone = new Zone(
+					new PointPositif(agent.getCoord().getX() - agent.getCoord().getX() % 10, agent.getCoord().getY() -agent.getCoord().getY() % 10),
+					new PointPositif(agent.getCoord().getX() - agent.getCoord().getX() % 10 + 10 ,agent.getCoord().getY() -  agent.getCoord().getY() % 10 + 10)
+					);
+			
+			List<Agent> agents = agentsVoisin.get(zone);
+			if(agents == null) agentsVoisin.put(zone, new ArrayList<Agent>());
+			agentsVoisin.get(zone).add(agent);
 		}
 		return agentsVoisin;
 	}
 	
+	public Map<Agent,List<Agent>> gererRencontreOpti() {
+		Map<Zone, List<Agent>> linkedAgentsZone =  distrubitionZoneAgent();
+		Map<Agent,List<Agent>> agentsVoisin = new HashMap<Agent,List<Agent>>();
+		
+		for(Entry<Zone, List<Agent>> entry : linkedAgentsZone.entrySet()) 
+		{ 
+			Zone key = entry.getKey();
+			List<Agent> value = entry.getValue();
+			for(Agent agent1: value) 
+			{
+				agentsVoisin.put(agent1,new ArrayList<Agent>());
+				for(Agent agent2:value) {
+					if(agent1.getCoord().getRayon(agent2.getCoord()) < RAYON && !agent1.equals(agent2))
+					{
+						agentsVoisin.get(agent1).add(agent2);
+					}
+				}
+			}
+		}
+		return agentsVoisin;
+	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		cycle();
-		testZone();
 		//System.out.println("cycle");
 	}
 

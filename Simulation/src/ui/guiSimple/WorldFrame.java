@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
-import javax.swing.AbstractButton;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -38,6 +38,16 @@ public class WorldFrame extends JFrame implements Runnable{
 	 */
 	private Thread thread;
 	private JLabel labelInfo = new JLabel();
+	
+	
+	private JLabel nbrAgent = new JLabel();
+	private JLabel chronometre = new JLabel();
+	private JLabel nbrRuche = new JLabel();
+	private JLabel nbrArbre = new JLabel();
+	private int timeElapsedS = 0;
+	private int timeElapsedMs = 0;
+	private int previousTimeElapsedMs = 1000000;
+	
 
 	
 		/**
@@ -89,6 +99,13 @@ public class WorldFrame extends JFrame implements Runnable{
 		panCommandes.add(btStart);
 		panCommandes.add(btStop);
 		
+		
+		//panStats.add(nbrAgent);
+		//panStats.add(chronometre);
+		//panStats.add(nbrArbre);
+		//panStats.add(nbrRuche);
+		
+		chronometre.setText("Temps écoulé : " + 0);
 		btStart.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				start();
@@ -172,6 +189,7 @@ public class WorldFrame extends JFrame implements Runnable{
 		}
 		labelInfo.setText("Animation en cours");
 		
+		
 	}
 
 	private void dimensionnerFenetre() {
@@ -192,6 +210,14 @@ public class WorldFrame extends JFrame implements Runnable{
 			repaint();
 			try {
 		        Thread.sleep(durationOfCycle);
+		        
+				timeElapsedMs  += 1;
+				if(timeElapsedMs > previousTimeElapsedMs)
+				{
+					previousTimeElapsedMs += 1000000;
+					timeElapsedS  += 1;
+					chronometre.setText("Temps écoulé : " + timeElapsedS);
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
