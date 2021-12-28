@@ -322,7 +322,7 @@ public class Monde implements MondeAnimable{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		cycle();
-		//System.out.println("cycle");
+		System.out.println("cycle");
 	}
 
 	@Override

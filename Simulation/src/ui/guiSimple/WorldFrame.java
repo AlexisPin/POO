@@ -44,12 +44,9 @@ public class WorldFrame extends JFrame implements Runnable{
 	private JLabel chronometre = new JLabel();
 	private JLabel nbrRuche = new JLabel();
 	private JLabel nbrArbre = new JLabel();
-	private int timeElapsedS = 0;
-	private int timeElapsedMs = 0;
-	private int previousTimeElapsedMs = 1000000;
-	
 
-	
+	Chrono chrono = new Chrono();
+
 		/**
 	 * Constructeur
 	 * Vous verrez plus tard comment limiter le couplage fort entre une UI et un model: le MVC
@@ -90,14 +87,17 @@ public class WorldFrame extends JFrame implements Runnable{
 		JPanel panInfo = new JPanel();
 		panInfo.setBackground(Color.blue);
 		panInfo.add(labelInfo);
-		labelInfo.setText("Animation non dÃ©marrÃ©");
+		labelInfo.setText("Animation non démarée");
 		JPanel panCommandes = new JPanel();
 		panCommandes.setBackground(Color.green);
 		panCommandes.setLayout(new GridLayout(10,1));
 		JButton btStart = new JButton("Start");
 		JButton btStop = new JButton("Stop");
+		JButton btStopChrono = new JButton("Arrêter le chronomètre");
+		
 		panCommandes.add(btStart);
 		panCommandes.add(btStop);
+		panCommandes.add(btStopChrono);
 		
 		
 		//panStats.add(nbrAgent);
@@ -105,7 +105,10 @@ public class WorldFrame extends JFrame implements Runnable{
 		//panStats.add(nbrArbre);
 		//panStats.add(nbrRuche);
 		
-		chronometre.setText("Temps écoulé : " + 0);
+		chronometre.setText("Temps écoulé : " + chrono.getDureeTxt());
+		chrono.start();
+		chrono.pause();
+		panStats.add(chronometre);
 		btStart.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				start();
@@ -115,6 +118,14 @@ public class WorldFrame extends JFrame implements Runnable{
 		btStop.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				stop();
+			}
+		});
+		
+		btStopChrono.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				chrono.stop();	
 			}
 		});
 				
@@ -177,6 +188,7 @@ public class WorldFrame extends JFrame implements Runnable{
 		 */
 		monde.stopperAnimation();
 		labelInfo.setText("Animation en pause");
+		chrono.pause();
 	}
 
 	private void start() {
@@ -188,6 +200,7 @@ public class WorldFrame extends JFrame implements Runnable{
 			thread.start();
 		}
 		labelInfo.setText("Animation en cours");
+		chrono.resume();
 		
 		
 	}
@@ -210,20 +223,12 @@ public class WorldFrame extends JFrame implements Runnable{
 			repaint();
 			try {
 		        Thread.sleep(durationOfCycle);
-		        
-				timeElapsedMs  += 1;
-				if(timeElapsedMs > previousTimeElapsedMs)
-				{
-					previousTimeElapsedMs += 1000000;
-					timeElapsedS  += 1;
-					chronometre.setText("Temps écoulé : " + timeElapsedS);
-				}
+		        chrono.refresh();
+		        chronometre.setText("Temps écoulé : " + chrono.getDureeTxt());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}		
 	}
 	
-	
-
 }

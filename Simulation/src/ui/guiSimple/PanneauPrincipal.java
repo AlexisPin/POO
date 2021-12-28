@@ -69,7 +69,7 @@ public class PanneauPrincipal extends JPanel {
 		labelNbrRuche.setText("Il y a " + nbrRuche + " ruche");
 		labelNbrAgent.setText("Il y a " + nbrAgent + " agent");
 		labelNbrArbre.setText("Il y a " + nbrArbre + " arbre");
-		this.add(labelNbrRuche);
+		this.add(labelNbrRuche,-1);
 		this.add(labelNbrAgent);
 		this.add(labelNbrArbre);
 		nbrRuche = 0;
